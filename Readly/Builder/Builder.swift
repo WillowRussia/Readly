@@ -25,5 +25,11 @@ class Builder {
             RegistPresenter(view: view)
         }
     }
+    
+    static func createOnboardingView() -> UIViewController {
+        return self.createView(viewType: OnboardingView.self) { view in
+            OnboardingPresenter(view: view)
+        }
+    }
 
 }

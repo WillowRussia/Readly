@@ -32,26 +32,12 @@ struct RegistViewContent: View {
                     .foregroundStyle(.white)
                     .clipShape(.rect (cornerRadius: 10))
                 Spacer()
-                Button {
+                OrangeButton(title: "Далее") {
                     buttonAction(nameField)
-                } label: {
-                    Text ( "Далее")
-                        .padding (.vertical, 19)
-                        .frame (maxWidth: .infinity)
-                        .background (.appOrange)
-                        .foregroundStyle(.white)
-                        .clipShape(.rect (cornerRadius: 10))
-                        .font(type: .bold, size: 14)
                 }
             }
         }
         .padding(.all, 30)
         .background(.mainBackground)
     }
-}
-             
-#Preview {
-    RegistViewContent(buttonAction: {
-        print($0)
-    })
 }
