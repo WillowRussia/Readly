@@ -24,7 +24,7 @@ class RegistPresenter: RegistPresenterProtocol {
             UserDefaults.standard.set(name, forKey: "name")
             NotificationCenter.default.post(name: .windowManager, object: nil, userInfo: [String.windowInfo: WindowCase.onboarding])
         } else {
-            print("error")
+            view?.showAlert(title: "Ошибка", message: "Имя должно содержать минимум 2 символа")
         }
     }
     

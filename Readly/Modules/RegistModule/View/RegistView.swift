@@ -8,7 +8,9 @@
 import UIKit
 import SwiftUI
 
-protocol RegistViewProtocol: BaseViewProtocol{}
+protocol RegistViewProtocol: BaseViewProtocol{
+    func showAlert(title: String, message: String)
+}
 
 class RegistView: UIViewController, RegistViewProtocol {
     typealias PresenterType = RegistPresenterProtocol
@@ -28,6 +30,12 @@ class RegistView: UIViewController, RegistViewProtocol {
         view.addSubview(content.view)
         content.didMove(toParent: self)
     }
+    
+    func showAlert(title: String, message: String) {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
+        }
 
 
 }

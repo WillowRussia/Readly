@@ -25,6 +25,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		5D7984F72D7D8222009239B7 /* StorageManager */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = StorageManager;
+			sourceTree = "<group>";
+		};
 		5D8AC2022D72243B008C258C /* Readly */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -50,6 +55,7 @@
 		5D8AC1F72D72243B008C258C = {
 			isa = PBXGroup;
 			children = (
+				5D7984F72D7D8222009239B7 /* StorageManager */,
 				5D8AC2022D72243B008C258C /* Readly */,
 				5D8AC2012D72243B008C258C /* Products */,
 			);
@@ -79,6 +85,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				5D7984F72D7D8222009239B7 /* StorageManager */,
 				5D8AC2022D72243B008C258C /* Readly */,
 			);
 			name = Readly;
