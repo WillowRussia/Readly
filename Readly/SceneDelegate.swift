@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum WindowCase{
+enum WindowCase: String{
     case regist, onboarding, main
 }
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -36,7 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         case .onboarding:
             self.window?.rootViewController = Builder.createOnboardingView()
         case .main:
-            self.window?.rootViewController = Builder.createRegistView()
+            self.window?.rootViewController = Builder.createMainView()
         }
     }
     

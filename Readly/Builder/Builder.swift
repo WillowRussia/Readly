@@ -31,5 +31,11 @@ class Builder {
             OnboardingPresenter(view: view)
         }
     }
+    
+    static func createMainView() -> UIViewController {
+        return self.createView(viewType: MainView.self) { view in
+            MainPresenter(view: view)
+        }
+    }
 
 }

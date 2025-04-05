@@ -19,18 +19,7 @@ struct RegistViewContent: View {
                     .font(type: .black, size: 24)
                     .foregroundStyle(.white)
                 Spacer()
-                TextField("Ваше имя", text: $nameField)
-                    .placeholder(when: nameField.isEmpty) {
-                        Text("Ваше имя")
-                            .foregroundColor(.appGray)
-                            .padding(.leading, 2)
-                    }
-                    .frame (maxWidth: .infinity)
-                    .frame(height: 52)
-                    .padding(.horizontal, 10)
-                    .background(.appDark)
-                    .foregroundStyle(.white)
-                    .clipShape(.rect (cornerRadius: 10))
+                BaseTextView(placeholder: "Ваше имя", text: $nameField)
                 Spacer()
                 OrangeButton(title: "Далее") {
                     buttonAction(nameField)

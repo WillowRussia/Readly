@@ -1,5 +1,5 @@
 //
-//  Untitled.swift
+//  CustomFont.swift
 //  Readly
 //
 //  Created by Илья Востров on 01.03.2025.

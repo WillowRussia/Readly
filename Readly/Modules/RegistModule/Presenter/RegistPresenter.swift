@@ -22,6 +22,7 @@ class RegistPresenter: RegistPresenterProtocol {
     func checkName(name: String) {
         if name.count >= 2 {
             UserDefaults.standard.set(name, forKey: "name")
+            UserDefaults.standard.set(WindowCase.onboarding.rawValue, forKey: "state")
             NotificationCenter.default.post(name: .windowManager, object: nil, userInfo: [String.windowInfo: WindowCase.onboarding])
         } else {
             view?.showAlert(title: "Ошибка", message: "Имя должно содержать минимум 2 символа")

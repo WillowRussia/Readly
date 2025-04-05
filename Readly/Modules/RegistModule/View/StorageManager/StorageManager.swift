@@ -1,5 +1,5 @@
 //
-//  Untitled.swift
+//  StorageManager.swift
 //  Readly
 //
 //  Created by Илья Востров on 09.03.2025.
@@ -12,9 +12,9 @@ class StorageManager {
     private var path = FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask)[0]
     
     func saveCover(bookId: String, cover: Data){
-        var bookPath = path.appending (component: bookId)
+        let bookPath = path.appending (component: bookId)
         try? FileManager.default.createDirectory(at: bookPath, withIntermediateDirectories: true)
-        var coverPath = bookPath.appending(component: "cover jpeg")
+        let coverPath = bookPath.appending(component: "cover jpeg")
         
         do {
             try cover.write(to: coverPath)
@@ -25,7 +25,7 @@ class StorageManager {
     }
     
     func getCover(bookId: String) -> Data?{
-        var coverPath = path
+        let coverPath = path
             .appending (component: bookId)
             .appending (component: "cover.jpeg")
          

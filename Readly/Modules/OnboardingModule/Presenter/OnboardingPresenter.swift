@@ -5,7 +5,7 @@
 //  Created by Илья Востров on 01.03.2025.
 //
 
-import Foundation
+import UIKit
 
 protocol OnboardingPresenterProtocol: AnyObject {
     var mockData: [OnboardinData] { get }
@@ -23,6 +23,7 @@ class OnboardingPresenter: OnboardingPresenterProtocol {
     }
     
     func startApp() {
+        UserDefaults.standard.set(WindowCase.main.rawValue, forKey: "state")
         NotificationCenter.default.post(name: .windowManager, object: nil, userInfo: [String.windowInfo: WindowCase.main])
     }
     
