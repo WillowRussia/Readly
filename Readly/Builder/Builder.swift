@@ -37,5 +37,11 @@ class Builder {
             MainPresenter(view: view)
         }
     }
+    
+    static func createDetailsView() -> UIViewController {
+        return self.createView(viewType: DetailsView.self) { view in
+            DetailsPresenter(view: view)
+        }
+    }
 
 }
