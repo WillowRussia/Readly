@@ -49,5 +49,11 @@ class Builder {
             AddBookPresenter(view: view)
         }
     }
+    
+    static func createBookListView() -> UIViewController {
+        return self.createView(viewType: BookListView.self) { view in
+            BookListPresenter(view: view)
+        }
+    }
 
 }

@@ -8,19 +8,19 @@
 import UIKit
 import SwiftUI
 
-protocol AddBookViewProtocol: BaseViewProtocol {
+protocol BookListViewProtocol: BaseViewProtocol {
     
 }
 
-class AddBookView: UIViewController, AddBookViewProtocol {
+class BookListView: UIViewController, BookListViewProtocol {
     
-    typealias PresenterType = AddBookPresenterProtocol
+    typealias PresenterType = BookListPresenterProtocol
     var presenter: PresenterType?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let contentView = AddBookViewContent()
+        let contentView = BookListViewContent()
         let content = UIHostingController(rootView: contentView)
         addChild(content)
         content.view.frame = view.frame
