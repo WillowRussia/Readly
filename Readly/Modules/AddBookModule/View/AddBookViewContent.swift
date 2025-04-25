@@ -9,17 +9,18 @@ import SwiftUI
 
 struct AddBookViewContent: View {
     @State var bookName: String = ""
+    let completion: (String?) -> ()
     var body: some View {
         VStack( ){
             
             NavigationHeader(title: "Добавить книгу") {
-                //
+                completion(nil)
             }
             Spacer()
             BaseTextView(placeholder: "Название книги", text: $bookName)
             Spacer()
             OrangeButton(title: "Далее") {
-                //
+                completion(bookName)
             }
             
           
@@ -28,9 +29,4 @@ struct AddBookViewContent: View {
         .padding(.horizontal, 30)
         .background (.mainBackground)
     }
-}
-
-
-#Preview {
-    AddBookViewContent()
 }

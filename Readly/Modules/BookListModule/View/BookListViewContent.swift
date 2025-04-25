@@ -7,41 +7,44 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct BookListViewContent: View {
+    let books: [JsonBookModelItem]
+    let bookTitle: String
+    let completion: (JsonBookModelItem?) -> ()
+    
     var body: some View {
-        ZStack(alignment: .top){
-            
-            NavigationHeader(title: "Моя жизнь") {
-                //
+        ZStack(alignment: .top) {
+            NavigationHeader(title: bookTitle) {
+                completion(nil)
             }
+            .zIndex(1)
             
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 30) {
-                    Text("Результаты поиска")
-                        .foregroundStyle(.white)
-                        .font(size: 16)
-                        .padding(.horizontal, 5)
-                    
-                    VStack(alignment: .leading, spacing: 23 ){
-                        BookListItem(){}
-                        BookListItem(){}
-                        BookListItem(){}
-                        BookListItem(){}
-                        BookListItem(){}
+            if books.isEmpty {
+                EmptyBooksView()
+            } else {
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 30) {
+                        Text("Результаты поиска")
+                            .foregroundStyle(.white)
+                            .font(size: 16)
+                            .padding(.horizontal, 5)
+                        
+                        VStack(alignment: .leading, spacing: 23) {
+                            ForEach(books, id: \.self) { book in
+                                BookListItem(book: book) {
+                                    completion(book)
+                                }
+                            }
+                        }
                     }
-                    
                 }
-                
+                .padding(.top, 44)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(.top, 44)
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.horizontal, 30)
-        .background (.mainBackground)
+        .background(.mainBackground)
     }
-}
-
-
-#Preview {
-    BookListViewContent()
 }

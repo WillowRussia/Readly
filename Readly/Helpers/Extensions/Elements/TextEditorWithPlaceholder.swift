@@ -11,6 +11,7 @@ import SwiftUI
 struct TextEditorWithPlaceholder: View {
     @Binding var text: String
     var placeholder: String
+    let completion: () -> ()
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -27,7 +28,7 @@ struct TextEditorWithPlaceholder: View {
                 .foregroundColor(.white)
                 .overlay(alignment: .topTrailing){
                     Button {
-                        //
+                        completion()
                     } label: {
                         Image(systemName: "wand.and.stars")
                             .resizable()
@@ -43,7 +44,7 @@ struct TextEditorWithPlaceholder: View {
 
         }
         .scrollContentBackground(.hidden)
-        .frame(height: 114)
+        .frame(height: 180)
         .background(.appDark)
         .clipShape(.rect(cornerRadius: 10))
 

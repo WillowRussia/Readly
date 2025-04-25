@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D6270FA2DB67F9600F49C19 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5D6270F92DB67F9600F49C19 /* SDWebImageSwiftUI */; };
 		5D8AC21D2D7226CF008C258C /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 5D8AC21C2D7226CF008C258C /* Lottie */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D6270FA2DB67F9600F49C19 /* SDWebImageSwiftUI in Frameworks */,
 				5D8AC21D2D7226CF008C258C /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -84,6 +86,7 @@
 			name = Readly;
 			packageProductDependencies = (
 				5D8AC21C2D7226CF008C258C /* Lottie */,
+				5D6270F92DB67F9600F49C19 /* SDWebImageSwiftUI */,
 			);
 			productName = Readly;
 			productReference = 5D8AC2002D72243B008C258C /* Readly.app */;
@@ -115,6 +118,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				5D8AC21B2D7226CE008C258C /* XCRemoteSwiftPackageReference "lottie-spm" */,
+				5D6270F82DB67F9600F49C19 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5D8AC2012D72243B008C258C /* Products */;
@@ -346,6 +350,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5D6270F82DB67F9600F49C19 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI?ysclid=m9r42q4qc8761030667";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.3;
+			};
+		};
 		5D8AC21B2D7226CE008C258C /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
@@ -357,6 +369,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5D6270F92DB67F9600F49C19 /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5D6270F82DB67F9600F49C19 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
 		5D8AC21C2D7226CF008C258C /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5D8AC21B2D7226CE008C258C /* XCRemoteSwiftPackageReference "lottie-spm" */;

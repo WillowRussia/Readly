@@ -24,8 +24,11 @@ struct NavigationHeader: View {
                     .foregroundStyle(.white)
             }
             Spacer()
-            Text (title)
-                .font(type: .black, size: 22)
+            Text(title)
+                .font(type: .black, size: 20)
+                .frame(width: 250)
+                .lineLimit(1)
+                .truncationMode(.tail)
                 .foregroundStyle(.white)
             Spacer()
             Rectangle()

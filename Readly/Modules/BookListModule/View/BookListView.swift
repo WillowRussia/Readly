@@ -9,7 +9,7 @@ import UIKit
 import SwiftUI
 
 protocol BookListViewProtocol: BaseViewProtocol {
-    
+
 }
 
 class BookListView: UIViewController, BookListViewProtocol {
@@ -20,7 +20,16 @@ class BookListView: UIViewController, BookListViewProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let contentView = BookListViewContent()
+        let contentView = BookListViewContent(books: presenter?.bookList ?? [], bookTitle: presenter?.bookTitle ?? "Неизвестное имя") { [weak self] book in
+            guard let self = self else { return }
+            if let book = book {
+                let viewController = Builder.createAddDetailsView(book: book)
+                navigationController?.pushViewController(viewController, animated: true)
+            } else {
+                navigationController?.popViewController(animated: true)
+            }
+            
+        }
         let content = UIHostingController(rootView: contentView)
         addChild(content)
         content.view.frame = view.frame

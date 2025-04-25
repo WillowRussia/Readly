@@ -7,21 +7,22 @@
 import SwiftUI
 
 struct BookListItem: View {
+    let book: JsonBookModelItem
     var action: () -> ()
     var body: some View {
         Button {
             action()
         } label: {
             HStack(alignment: .top, spacing: 13 ){
-                Image(.testCover)
-                    .resizable()
-                    .frame(width: 100, height: 150)
+                BookCover(coverId: book.cover_i?.description)
+                    .scaledToFit()
+                    .frame(width: 80, height: 120)
                     .clipShape(.rect(cornerRadius: 3))
                 VStack(alignment: .leading, spacing: 7 ) {
-                    Text("Моя жизнь")
+                    Text(book.title ?? "Отсуствует")
                         .foregroundStyle(.white)
                         .font(type: .black, size: 17)
-                    Text("Илья Востров")
+                    Text(book.author_name?.first ?? "Отсуствует")
                         .foregroundStyle(.appGray)
                         .font(type: .medium, size: 15)
                 }

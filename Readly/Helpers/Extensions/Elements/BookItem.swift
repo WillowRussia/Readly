@@ -10,7 +10,7 @@ struct BookItem: View {
     //var book: Book
     var body: some View {
         HStack(spacing: 13) {
-            Image(.testCover)
+            Image(.defaultCover)
                 .resizable()
                 .frame(width: 64, height: 94)
                 .clipShape(.rect(cornerRadius: 3))

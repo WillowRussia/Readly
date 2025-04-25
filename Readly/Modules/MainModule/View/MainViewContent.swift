@@ -11,6 +11,7 @@ struct MainViewContent: View {
     @State var searchField = ""
     @State private var selectedCategory: SelectedCategory = .willRead
     var name: String
+    var addBookCompletion: () -> ()
     var body: some View {
         ZStack(alignment: .top ){
             //MARK: Header
@@ -25,7 +26,7 @@ struct MainViewContent: View {
                     .foregroundStyle(.white)
                     Spacer()
                     Button {
-                        
+                        addBookCompletion()
                     } label: {
                         HStack(spacing: 10){
                             Image (systemName: "book.closed")
@@ -65,7 +66,7 @@ struct MainViewContent: View {
                                 HStack(spacing: 20 ){
                                     Button {
                                     } label: {
-                                        Image(.testCover)
+                                        Image(.defaultCover)
                                             .resizable()
                                             .frame(width: 143, height: 212)
                                             .clipShape(.rect(cornerRadius: 5))
@@ -73,7 +74,7 @@ struct MainViewContent: View {
                                     
                                     Button {
                                     } label: {
-                                        Image(.testCover)
+                                        Image(.defaultCover)
                                             .resizable()
                                             .frame(width: 143, height: 212)
                                             .clipShape(.rect(cornerRadius: 5))
@@ -81,7 +82,7 @@ struct MainViewContent: View {
                                     
                                     Button {
                                     } label: {
-                                        Image(.testCover)
+                                        Image(.defaultCover)
                                             .resizable()
                                             .frame(width: 143, height: 212)
                                             .clipShape(.rect(cornerRadius: 5))
@@ -150,5 +151,7 @@ enum SelectedCategory {
 }
 
 #Preview {
-    MainViewContent(name: "Ilya")
+    MainViewContent(name: "Ilya") {
+        print("Hello world!")
+    }
 }

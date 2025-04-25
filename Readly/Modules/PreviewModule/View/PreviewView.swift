@@ -15,7 +15,7 @@ class PreviewView: UIViewController {
         $0.frame.size = CGSize(width: view.frame.width - 80, height: view.frame.width - 80)
         $0.center = view.center
         $0.contentMode = .scaleAspectFill
-        $0.animationSpeed = 1.3
+        $0.animationSpeed = 1
         return $0
     }(LottieAnimationView(name: "BookAnimation"))
     
@@ -25,13 +25,13 @@ class PreviewView: UIViewController {
         view.addSubview(lottieView)
         
         if let stateRaw = UserDefaults.standard.string(forKey:"state") {
-            if let state = WindowCase (rawValue: stateRaw) {
+            if let state = WindowCase(rawValue: stateRaw) {
                 self.state = state
             }
         }
-        lottieView.play { completed in
+        lottieView.play(toFrame: 90) { completed in
             if completed {
-                NotificationCenter.default.post(name: .windowManager, object: nil, userInfo: [String.windowInfo : self.state.rawValue])
+                NotificationCenter.default.post(name: .windowManager, object: nil, userInfo: [String.windowInfo : self.state])
                 
             }
         }
