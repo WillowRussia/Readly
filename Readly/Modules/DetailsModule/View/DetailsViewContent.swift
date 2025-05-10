@@ -11,7 +11,7 @@ struct DetailsViewContent: View {
     @State var offsetTop: CGFloat = 0
     @State var showTitle: Bool = false
     @State var commetDeleteOffsetX: CGFloat = 0
-    var bookName = "Моя жизнь"
+    var book: Book
     var body: some View {
         ZStack(alignment: .top){
             HStack(spacing: 20){
@@ -25,7 +25,7 @@ struct DetailsViewContent: View {
                 }
                 Spacer()
                 
-                Text((showTitle ? bookName : "О книге"))
+                Text((showTitle ? book.name : "О книге"))
                     .font(size: 18)
                     .foregroundStyle(.white)
                 
@@ -55,8 +55,7 @@ struct DetailsViewContent: View {
                         GeometryReader { proxy in
                             let minY = proxy.frame(in: .global).minY
                             
-                            Image(.defaultCover)
-                                .resizable()
+                            CoverFromFile(book: book)
                                 .scaledToFill()
                                 .frame(maxWidth: proxy.size.width)
                                 .frame(height: 400 + (minY > 0 ? minY : 0))
@@ -76,14 +75,13 @@ struct DetailsViewContent: View {
                         .frame(height: 400)
                         
                         VStack(spacing: 15) {
-                            Image(.defaultCover)
-                                .resizable()
+                            CoverFromFile(book: book)
                                 .frame(width: 143, height: 212)
                                 .clipShape(.rect(cornerRadius: 5))
                             VStack(spacing: 2){
-                                Text ("Моя жизнь")
+                                Text (book.name)
                                     .font(type: .bold, size: 20)
-                                Text ("Илья Востров")
+                                Text (book.author)
                                     .font(type: .medium, size: 16)
                             }
                             .foregroundStyle(.white)
@@ -100,7 +98,7 @@ struct DetailsViewContent: View {
                             Text ("Описание")
                                 .font(type: .black, size: 18)
                                 .foregroundStyle(.white)
-                            Text ("Очень важно описние, которое люди никогда не читают. Очень важно описние, которое люди никогда не читают. Очень важно описние, которое люди никогда не читают.")
+                            Text (book.bookDescription)
                                 .font (size: 14)
                                 .foregroundStyle(.appGray)
                         }
@@ -161,8 +159,4 @@ struct DetailsViewContent: View {
         }
         .background(.mainBackground)
     }
-}
-
-#Preview {
-    DetailsViewContent()
 }

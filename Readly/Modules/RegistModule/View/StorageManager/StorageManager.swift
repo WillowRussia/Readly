@@ -14,7 +14,7 @@ class StorageManager {
     func saveCover(bookId: String, cover: Data){
         let bookPath = path.appending (component: bookId)
         try? FileManager.default.createDirectory(at: bookPath, withIntermediateDirectories: true)
-        let coverPath = bookPath.appending(component: "cover jpeg")
+        let coverPath = bookPath.appending(component: "cover.jpeg")
         
         do {
             try cover.write(to: coverPath)

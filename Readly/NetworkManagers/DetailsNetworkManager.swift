@@ -1,5 +1,5 @@
 //
-//  TextNetworkManager.swift
+//  DetailsNetworkManager.swift
 //  Readly
 //
 //  Created by Илья Востров on 24.04.2025.
@@ -7,10 +7,11 @@
 
 import Foundation
 
-class TextNetworkManager {
+class DetailsNetworkManager {
     
     let url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
-    static let shared = TextNetworkManager()
+    static let shared = DetailsNetworkManager()
+    private init(){}
     
     func sendRequest(bookTitle title: String, completion: @escaping (Swift.Result<String, Error>) -> Void){
         
@@ -25,7 +26,7 @@ class TextNetworkManager {
                                                     CompletionOptions(stream: false,
                                                                       temperature: 0.2,
                                                                       maxTokens: "1000",
-                                                reasoningOptions:
+                                                                      reasoningOptions:
                                                                         ReasoningOptions(mode: "DISABLED")),
                                                  messages: [
                                                     Message(role: "system",
@@ -44,7 +45,7 @@ class TextNetworkManager {
         URLSession.shared.dataTask(with: request) { data, _, error in
             guard error == nil else { return }
             guard let data else { return }
-
+            
             do {
                 let result = try JSONDecoder().decode(YandexGPTResult.self, from: data)
                 completion(.success(result.result.alternatives.first!.message.text))
@@ -53,13 +54,33 @@ class TextNetworkManager {
                 print(error)
                 completion(.failure(error))
             }
-
+            
         }.resume()
     }
     
-    private init(){}
-    
-    
+    func loadCover(url: URL, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+        var request = URLRequest (url: url)
+        request.addValue("image/jpeg", forHTTPHeaderField: "Content-Type")
+        URLSession.shared.dataTask(with: request) { data, resp, error in
+            guard error == nil else {
+                print(error!.localizedDescription)
+                return
+            }
+            
+            guard let httResp = resp as? HTTPURLResponse,
+                  httResp.statusCode == 200 else {
+                completion(.failure(SaveError.missingCover))
+                return
+            }
+            
+            guard let data else {
+                completion(.failure(SaveError.missingData))
+                return
+            }
+            
+            completion(.success(data))
+        }.resume()
+    }
 }
 // MARK: - YandexGPTRequest
 struct YandexGPTRequest: Encodable {

@@ -12,16 +12,23 @@ protocol MainViewProtocol: BaseViewProtocol {
     
 }
 
+class MainViewModel: ObservableObject {
+    @Published var books: [BookStatus : [Book]] = [:]
+}
+
 class MainView: UIViewController, MainViewProtocol {
     
     typealias PresenterType = MainPresenterProtocol
     var presenter: PresenterType?
-
+    var viewModel = MainViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        let contentView = MainViewContent(name: presenter?.name ?? ""){
+        let contentView = MainViewContent(name: presenter?.name ?? "", viewModel: viewModel   ){
             self.navigationToViewController(book: nil)
+        } goToDetailsView: { [weak self] book in
+            guard let self = self else { return }
+            self.navigationToViewController(book: book)
         }
         
         let content = UIHostingController(rootView: contentView)
@@ -33,14 +40,21 @@ class MainView: UIViewController, MainViewProtocol {
         navigationController?.navigationBar.isHidden = true
     }
     
-    private func navigationToViewController(book: Book?){
-        if let book {
-            print(book)
-        } else {
-                let viewController = Builder.createAddBookView()
-            navigationController?.pushViewController(viewController, animated: true)
-                }
+    override func viewWillAppear(_ animated: Bool) {
+        self.presenter?.fetch()
+        let books = [BookStatus.read : presenter?.readingBooks ?? [], BookStatus.didRead : presenter?.unreadBooks ?? [], BookStatus.willRead : presenter?.willReadBooks ?? []]
+        viewModel.books = books
     }
     
-
+    private func navigationToViewController(book: Book?){
+        if let book {
+            let viewController = Builder.createDetailsView(book: book)
+        navigationController?.pushViewController(viewController, animated: true)
+        } else {
+            let viewController = Builder.createAddBookView()
+            navigationController?.pushViewController(viewController, animated: true)
+        }
+    }
+    
+    
 }

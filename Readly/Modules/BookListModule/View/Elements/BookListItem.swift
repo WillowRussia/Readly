@@ -14,7 +14,7 @@ struct BookListItem: View {
             action()
         } label: {
             HStack(alignment: .top, spacing: 13 ){
-                BookCover(coverId: book.cover_i?.description)
+                BookCover(image: .network(book.cover_i?.description))
                     .scaledToFit()
                     .frame(width: 80, height: 120)
                     .clipShape(.rect(cornerRadius: 3))
@@ -22,7 +22,7 @@ struct BookListItem: View {
                     Text(book.title ?? "Отсуствует")
                         .foregroundStyle(.white)
                         .font(type: .black, size: 17)
-                    Text(book.author_name?.first ?? "Отсуствует")
+                    Text(book.author_name?.authorsInOneLine() ?? "Отсуствует")
                         .foregroundStyle(.appGray)
                         .font(type: .medium, size: 15)
                 }

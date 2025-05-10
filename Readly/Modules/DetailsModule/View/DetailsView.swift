@@ -20,7 +20,7 @@ class DetailsView: UIViewController, DetailsViewProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let contentView = DetailsViewContent ()
+        let contentView = DetailsViewContent(book: presenter!.book)
         let content = UIHostingController(rootView: contentView)
         addChild(content)
         content.view.frame = view.frame

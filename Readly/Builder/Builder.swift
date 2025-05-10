@@ -39,9 +39,9 @@ class Builder {
             return UINavigationController(rootViewController: mainViewController)
     }
     
-    static func createDetailsView() -> UIViewController {
+    static func createDetailsView(book: Book) -> UIViewController {
         return self.createView(viewType: DetailsView.self) { view in
-            DetailsPresenter(view: view)
+            DetailsPresenter(view: view, book: book)
         }
     }
     

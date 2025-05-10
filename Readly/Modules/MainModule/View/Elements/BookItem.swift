@@ -18,13 +18,13 @@ struct BookItem: View {
             VStack(alignment: .leading, spacing: 9) {
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text ("Моя жизнь")
+                    Text("Моя жизнь")
                         .font(type: .bold, size: 14)
-                    Text ("Илья Востров")
+                    Text("Илья Востров")
                         .font(type: .medium, size: 12)
                         .foregroundStyle(.appGray)
                 }
-                Text ("Очень важно описние, которое люди никогда не читают, потому что...")
+                Text("Очень важно описние, которое люди никогда не читают, потому что...")
                     .font(type: .medium, size: 14)
             }
             .foregroundStyle(.white)
