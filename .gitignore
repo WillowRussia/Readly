@@ -1,2 +1,3 @@
 # Ignore specific file
 Readly/Helpers/APIKeys/APIKeys.swift
+Readly/Helpers/ApiKeys/ApiKeys.swift

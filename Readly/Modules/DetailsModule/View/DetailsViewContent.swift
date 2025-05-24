@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DetailsViewContent: View {
-    @State var book: Book
+    @ObservedObject var bookWrapper: BookWrapper
     var notes: [Note]
     var onAddNote: (String) -> Void
     var onDeleteNote: (Note) -> Void
@@ -25,14 +25,14 @@ struct DetailsViewContent: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            HeaderDetailsView(book: book, showTitle: showTitle, offsetTop: offsetTop, onBack: onBack, onEditDescription: onEditDescription, onDeleteBook: onDeleteBook)
+            HeaderDetailsView(book: bookWrapper.book, showTitle: showTitle, offsetTop: offsetTop, onBack: onBack, onEditDescription: onEditDescription, onDeleteBook: onDeleteBook)
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 29) {
-                    BookHeader(book: book, offsetTop: $offsetTop, showTitle: $showTitle, onStatusChange: onStatusChange)
+                    BookHeader(book: bookWrapper.book, offsetTop: $offsetTop, showTitle: $showTitle, onStatusChange: onStatusChange)
 
                     VStack(alignment: .leading, spacing: 36) {
-                        DescriptionSection(book: book)
+                        DescriptionSection(book: bookWrapper.book)
 
                         NotesSection(
                             notes: notes,

@@ -12,22 +12,34 @@ protocol DetailsViewProtocol: BaseViewProtocol {
     
 }
 
+class BookWrapper: ObservableObject {
+    @Published var book: Book
+
+    init(book: Book) {
+        self.book = book
+    }
+}
+
 class DetailsView: UIViewController, DetailsViewProtocol {
 
     typealias PresenterType = DetailsPresenterProtocol
     var presenter: PresenterType?
     
     private var hostingController: UIHostingController<DetailsViewContent>?
+    private var bookWrapper: BookWrapper!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        guard let presenter = presenter else { return }
+        bookWrapper = BookWrapper(book: presenter.book)
         reloadContent()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.presenter?.refreshBookFromDB()
-        self.reloadContent()
+        presenter?.refreshBookFromDB()
+        bookWrapper.book = presenter?.book ?? bookWrapper.book
+        reloadContent()
     }
 
     private func reloadContent() {
@@ -36,7 +48,7 @@ class DetailsView: UIViewController, DetailsViewProtocol {
         let notes = presenter.fetchNotes()
 
         let contentView = DetailsViewContent(
-            book: presenter.book,
+            bookWrapper: bookWrapper,
             notes: notes,
             onAddNote: { [weak self] text in
                 guard let self = self else { return }
@@ -66,26 +78,17 @@ class DetailsView: UIViewController, DetailsViewProtocol {
             }
         )
 
-//        if let hosting = hostingController {
-//            hosting.rootView = contentView
-//        } else {
-//            let hosting = UIHostingController(rootView: contentView)
-//            hostingController = hosting
-//            addChild(hosting)
-//            hosting.view.frame = view.bounds
-//            view.addSubview(hosting.view)
-//            hosting.didMove(toParent: self)
-//        }
-        hostingController?.willMove(toParent: nil)
-        hostingController?.view.removeFromSuperview()
-        hostingController?.removeFromParent()
-        
-        let hosting = UIHostingController(rootView: contentView)
-        hostingController = hosting
-        addChild(hosting)
-        hosting.view.frame = view.bounds
-        view.addSubview(hosting.view)
-        hosting.didMove(toParent: self)
+        if let hosting = hostingController {
+            hosting.rootView = contentView
+        } else {
+            let hosting = UIHostingController(rootView: contentView)
+            hostingController = hosting
+            addChild(hosting)
+            hosting.view.frame = view.bounds
+            view.addSubview(hosting.view)
+            hosting.didMove(toParent: self)
+        }
+
 
     }
 }
