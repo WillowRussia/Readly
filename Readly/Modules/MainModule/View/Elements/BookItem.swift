@@ -7,27 +7,42 @@
 import SwiftUI
 
 struct BookItem: View {
-    //var book: Book
+    var book: Book
+    var goToDetailsView: (Book) -> Void
+
     var body: some View {
-        HStack(spacing: 13) {
-            Image(.defaultCover)
-                .resizable()
-                .frame(width: 64, height: 94)
-                .clipShape(.rect(cornerRadius: 3))
-            
-            VStack(alignment: .leading, spacing: 9) {
+        Button {
+            goToDetailsView(book)
+        } label: {
+            HStack(spacing: 13) {
+                CoverFromFile(book: book)
+                    .frame(width: 94, height: 134)
+                    .clipShape(RoundedRectangle(cornerRadius: 3))
                 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Моя жизнь")
-                        .font(type: .bold, size: 14)
-                    Text("Илья Востров")
-                        .font(type: .medium, size: 12)
-                        .foregroundStyle(.appGray)
+                VStack(alignment: .leading, spacing: 9) {
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(book.name)
+                            .font(type: .bold, size: 14)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+
+                        Text(book.author)
+                            .font(type: .medium, size: 12)
+                            .foregroundStyle(.appGray)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                    }
+
+                    Text(book.bookDescription)
+                        .font(type: .medium, size: 14)
+                        .lineLimit(3)
+                        .truncationMode(.tail)
                 }
-                Text("Очень важно описние, которое люди никогда не читают, потому что...")
-                    .font(type: .medium, size: 14)
+                .foregroundStyle(.white)
             }
-            .foregroundStyle(.white)
         }
     }
 }
+
+

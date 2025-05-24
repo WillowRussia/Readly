@@ -57,7 +57,7 @@ class Builder {
         }
     }
     
-    static func createAddDetailsView(book: JsonBookModelItem) -> UIViewController {
+    static func createAddDetailsView(book: BookSource) -> UIViewController {
         return self.createView(viewType: AddDetailsView.self) { view in
             AddDetailsPresenter(view: view, book: book)
         }

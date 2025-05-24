@@ -13,37 +13,47 @@ protocol AddBookViewProtocol: BaseViewProtocol {
     func showAlert(title: String, message: String)
 }
 
+class LoadingState: ObservableObject {
+    @Published var isLoading: Bool = false
+}
+
 class AddBookView: UIViewController, AddBookViewProtocol {
     
     typealias PresenterType = AddBookPresenterProtocol
     var presenter: PresenterType?
     
+    private let loadingState = LoadingState()
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let contentView = AddBookViewContent(){ [weak self] bookName in
+
+        let contentView = AddBookViewContent(loadingState: loadingState) { [weak self] bookName in
             guard let self = self else { return }
             if let title = bookName {
+                self.loadingState.isLoading = true
                 self.presenter?.searchBooks(by: title)
             } else {
                 self.navigationController?.popViewController(animated: true)
             }
         }
-        let content = UIHostingController(rootView: contentView)
-        addChild(content)
-        content.view.frame = view.frame
-        view.addSubview(content.view)
-        content.didMove(toParent: self)
+
+        let hostingController = UIHostingController(rootView: contentView)
+        addChild(hostingController)
+        hostingController.view.frame = view.bounds
+        view.addSubview(hostingController.view)
+        hostingController.didMove(toParent: self)
     }
-    
+
     func goToBookListView(bookList: [JsonBookModelItem], bookTitle: String) {
-        let viewControllerc = Builder.createBookListView(bookList: bookList, bookTitle: bookTitle)
-        navigationController?.pushViewController(viewControllerc, animated: true)
+        loadingState.isLoading = false
+        let viewController = Builder.createBookListView(bookList: bookList, bookTitle: bookTitle)
+        navigationController?.pushViewController(viewController, animated: true)
     }
-    
+
     func showAlert(title: String, message: String) {
-            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            present(alert, animated: true, completion: nil)
-        }
+        loadingState.isLoading = false
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
 }

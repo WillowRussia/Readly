@@ -1,5 +1,5 @@
 //
-//  HeaderView.swift
+//  HeaderMainView.swift
 //  Readly
 //
 //  Created by Илья Востров on 10.05.2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HeaderView: View {
+struct HeaderMainView: View {
     var name: String
     var addBookCompletion: () -> Void
     

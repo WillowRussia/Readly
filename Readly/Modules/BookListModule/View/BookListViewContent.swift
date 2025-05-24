@@ -22,7 +22,7 @@ struct BookListViewContent: View {
             .zIndex(1)
             
             if books.isEmpty {
-                EmptyBooksView()
+                EmptyBooksView(title: "Книги не найдены", subtitle: "Попробуйте изменить текст запроса", bookStyle: .booksVerticalFill)
             } else {
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 30) {

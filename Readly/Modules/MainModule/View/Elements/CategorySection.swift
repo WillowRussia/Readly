@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CategorySection: View {
     @Binding var selectedCategory: SelectedCategory
+    @ObservedObject var viewModel: MainViewModel
+    var goToDetailsView: (Book) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 26) {
@@ -30,15 +32,23 @@ struct CategorySection: View {
             switch selectedCategory {
             case .willRead:
                 VStack {
-                    BookItem()
-                    BookItem()
+                    if let willReadBooks = viewModel.books[BookStatus.willRead], willReadBooks != [] {
+                        ForEach(willReadBooks) { book in
+                            BookItem(book: book, goToDetailsView: goToDetailsView)
+                        }
+                    } else {
+                        EmptyBooksView(title: "Список книг пуст", subtitle: "Попробуйте добавить пару новых книг", bookStyle: .booksVerticalFill)
+                    }
                 }
             case .didRead:
                 VStack {
-                    BookItem()
-                    BookItem()
-                    BookItem()
-                    BookItem()
+                    if let didReadBooks = viewModel.books[BookStatus.didRead], didReadBooks != [] {
+                        ForEach(didReadBooks) { book in
+                            BookItem(book: book, goToDetailsView: goToDetailsView)
+                        }
+                    } else {
+                        EmptyBooksView(title: "Список книг пуст", subtitle: "Попробуйте добавить пару новых книг", bookStyle: .booksVerticalFill)
+                    }
                 }
             }
         }

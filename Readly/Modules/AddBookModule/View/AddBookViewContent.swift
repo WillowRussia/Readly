@@ -9,24 +9,32 @@ import SwiftUI
 
 struct AddBookViewContent: View {
     @State var bookName: String = ""
+    @ObservedObject var loadingState: LoadingState
     let completion: (String?) -> ()
+
     var body: some View {
-        VStack( ){
-            
-            NavigationHeader(title: "Добавить книгу") {
-                completion(nil)
+        ZStack {
+            VStack {
+                NavigationHeader(title: "Добавить книгу") {
+                    completion(nil)
+                }
+                Spacer()
+                BaseTextView(placeholder: "Название книги", text: $bookName)
+                Spacer()
+                OrangeButton(title: "Далее") {
+                    completion(bookName)
+                }
             }
-            Spacer()
-            BaseTextView(placeholder: "Название книги", text: $bookName)
-            Spacer()
-            OrangeButton(title: "Далее") {
-                completion(bookName)
+            .padding(.horizontal, 30)
+            .background(.mainBackground)
+
+            if loadingState.isLoading {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .orange))
+                    .scaleEffect(2)
             }
-            
-          
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .padding(.horizontal, 30)
-        .background (.mainBackground)
     }
 }

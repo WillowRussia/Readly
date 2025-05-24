@@ -22,6 +22,7 @@ protocol AddDetailsViewDelegate {
 class AddDetailsViewModel: ObservableObject {
     @Published var bookDescription: String = ""
     @Published var isAddError: Bool = false
+    @Published var isLoading: Bool = false
 }
 
 class AddDetailsView: UIViewController, AddDetailsViewProtocol, AddDetailsViewDelegate {
@@ -33,7 +34,11 @@ class AddDetailsView: UIViewController, AddDetailsViewProtocol, AddDetailsViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let contentView = AddDetailsViewContent(book: presenter!.book, delegate: self, viewModel: presenter!.viewModel)
+        let contentView = AddDetailsViewContent(
+            source: presenter!.book,
+            delegate: self,
+            viewModel: presenter!.viewModel
+        )
         let content = UIHostingController(rootView: contentView)
         addChild(content)
         content.view.frame = view.frame
@@ -42,18 +47,32 @@ class AddDetailsView: UIViewController, AddDetailsViewProtocol, AddDetailsViewDe
     }
     
     func saveBook(imageType: ImageType, bookName: String, bookAuthor: String, bookDescription: String) {
-        presenter?.createBook(imageType: imageType, bookName: bookName, bookAuthor: bookAuthor, bookDescription: bookDescription) {
-            result in
+        presenter?.createOrUpdateBook(
+            imageType: imageType,
+            bookName: bookName,
+            bookAuthor: bookAuthor,
+            bookDescription: bookDescription
+        ) { [weak self] result in
+            guard let self = self else { return }
+
             switch result {
             case .success(let success):
                 if success {
-                    self.goToMainView()
+                    switch self.presenter?.book {
+                    case .json:
+                        self.goToMainView()
+                    case .coreData( _):
+                        self.navigationController?.popViewController(animated: true)
+                    case .none:
+                        break
+                    }
                 }
-            case . failure(let failure):
-                print ("error: \(failure)")
+            case .failure(let error):
+                print("error: \(error)")
             }
         }
     }
+
     
     func back() {
         navigationController?.popViewController(animated: true)

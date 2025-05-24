@@ -7,17 +7,19 @@
 import SwiftUI
 
 struct CommentView: View {
+    var note: Note
     var body: some View {
         VStack(alignment: .leading){
-            Text("13.01.25")
+            Text(note.date.formatDate())
                 .foregroundStyle(.white)
                 .font (size: 12)
-            Text ("Очень важно описние, которое люди никогда не читают. Очень важно описние, которое люди никогда не читают. Очень важно описние, которое люди никогда не читают. Очень важно описние, которое люди никогда не читают")
+            Text(note.text)
         }
                 .foregroundStyle(.appGray)
                 .font(size: 13)
-                .padding (.vertical, 12)
+                .padding(.vertical, 12)
                 .padding(.horizontal, 21)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .background(.appDark)
                 .clipShape(.rect(cornerRadius: 10))
             

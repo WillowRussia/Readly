@@ -59,8 +59,7 @@ class DetailsNetworkManager {
     }
     
     func loadCover(url: URL, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        var request = URLRequest (url: url)
-        request.addValue("image/jpeg", forHTTPHeaderField: "Content-Type")
+        let request = URLRequest (url: url)
         URLSession.shared.dataTask(with: request) { data, resp, error in
             guard error == nil else {
                 print(error!.localizedDescription)

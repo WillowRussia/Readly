@@ -20,10 +20,10 @@ extension Note {
         return NSFetchRequest<Note>(entityName: "Note")
     }
 
-    @NSManaged public var id: String?
-    @NSManaged public var text: String?
-    @NSManaged public var date: Date?
-    @NSManaged public var book: Book?
+    @NSManaged public var id: String
+    @NSManaged public var text: String
+    @NSManaged public var date: Date
+    @NSManaged public var book: Book
 
 }
 

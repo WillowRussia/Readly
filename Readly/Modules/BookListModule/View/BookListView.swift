@@ -23,7 +23,7 @@ class BookListView: UIViewController, BookListViewProtocol {
         let contentView = BookListViewContent(books: presenter?.bookList ?? [], bookTitle: presenter?.bookTitle ?? "Неизвестное имя") { [weak self] book in
             guard let self = self else { return }
             if let book = book {
-                let viewController = Builder.createAddDetailsView(book: book)
+                let viewController = Builder.createAddDetailsView(book: .json(book))
                 navigationController?.pushViewController(viewController, animated: true)
             } else {
                 navigationController?.popViewController(animated: true)

@@ -24,19 +24,17 @@ class AddBookPresenter: AddBookPresenterProtocol {
         if title.count > 2 {
             manager.serachBookRequest(q: title) { [weak self] books in
                 guard let self = self else { return }
-                switch books {
-                case .success (let success):
-                    DispatchQueue.main.async {
+                DispatchQueue.main.async {
+                    switch books {
+                    case .success(let success):
                         self.view?.goToBookListView(bookList: success, bookTitle: title)
+                    case .failure(let failure):
+                        print(failure.localizedDescription)
                     }
-                case .failure(let failure):
-                    print(failure.localizedDescription)
                 }
-                
             }
         } else {
             view?.showAlert(title: "Ошибка", message: "Имя книги должно содержать минимум 2 символа")
-            
         }
     }
 }

@@ -28,7 +28,7 @@ class StorageManager {
         let coverPath = path
             .appending (component: bookId)
             .appending (component: "cover.jpeg")
-         
+        
         do {
             let coverData = try Data (contentsOf: coverPath)
             return coverData
@@ -37,4 +37,17 @@ class StorageManager {
             return nil
         }
     }
+    
+    func deleteCover(bookId: String) {
+        let bookPath = path.appendingPathComponent(bookId)
+        
+        do {
+            try FileManager.default.removeItem(at: bookPath)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
+    
+    
 }

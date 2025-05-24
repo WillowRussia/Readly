@@ -27,7 +27,7 @@ extension Book {
     @NSManaged public var name: String
     @NSManaged public var status: Int16
     @NSManaged public var notes: NSSet?
-    @NSManaged public var coverURL: String?
+    @NSManaged public var coverURL: String
 
 }
 
