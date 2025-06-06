@@ -11,11 +11,11 @@ struct BaseTextView: View {
     var placeholder: String
     @Binding var text: String
     var body: some View {
-        TextField(placeholder, text: $text)
+        TextField("", text: $text)
             .placeholder(when: text.isEmpty) {
                 Text(placeholder)
                     .foregroundColor(.appGray)
-                    .padding(.leading, 2)
+                    .padding(.leading, 3)
             }
             .frame (maxWidth: .infinity)
             .frame(height: 52)

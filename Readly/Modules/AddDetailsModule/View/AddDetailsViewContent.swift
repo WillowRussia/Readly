@@ -16,13 +16,14 @@ struct AddDetailsViewContent: View {
     @State var isShowPicker = false
     @State var bookCoverType: ImageType
     @ObservedObject var viewModel: AddDetailsViewModel
+    @FocusState private var focusedField: Field?
     var delegate: AddDetailsViewDelegate?
     
     init(source: BookSource, delegate: AddDetailsViewDelegate?, viewModel: AddDetailsViewModel) {
         self.source = source
         self.delegate = delegate
         self.viewModel = viewModel
-
+        
         switch source {
         case .json(let jsonBook):
             _bookName = .init(initialValue: jsonBook.title ?? "Неизвестно")
@@ -40,9 +41,15 @@ struct AddDetailsViewContent: View {
             viewModel.bookDescription = book.bookDescription
         }
     }
-
+    
     
     var body: some View {
+        
+        Color.mainBackground
+            .onTapGesture {
+                hideKeyboard()
+            }
+        
         VStack(spacing: 40) {
             NavigationHeader(title: bookName) {
                 delegate?.back()
@@ -81,7 +88,9 @@ struct AddDetailsViewContent: View {
                     
                     VStack(spacing: 10){
                         BaseTextView(placeholder: "Название книги", text: $bookName)
+                            .focused($focusedField, equals: .bookName)
                         BaseTextView(placeholder: "Автор книги", text: $bookAuthor)
+                            .focused($focusedField, equals: .bookAuthor)
                         TextEditorWithPlaceholder(text: $viewModel.bookDescription, placeholder: "Описание книги", viewModel: viewModel) {
                             delegate?.createText()
                         }
@@ -101,16 +110,33 @@ struct AddDetailsViewContent: View {
         .padding(.horizontal, 30)
         .padding(.bottom, 20)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: Alignment(horizontal: .leading, vertical: . top))
-        .background(.mainBackground)
         .alert(isPresented: $viewModel.isAddError) {
             Alert(title: Text("Ошибка"),
-                   message: Text("0"), dismissButton: .default(Text("0K")))
+                  message: Text("0"), dismissButton: .default(Text("0K")))
         }
-        
+        .onChange(of: viewModel.isAddError) { isError in
+                    if isError {
+                        hideKeyboard()
+                    }
+                }
+    }
+    private var isSaveButtonDisabled: Bool {
+        viewModel.bookDescription.count < 3 || bookName.count < 3 || bookAuthor.count < 3
+    }
+    
+    
+    private func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 
 enum BookSource {
     case json(JsonBookModelItem)
     case coreData(Book)
+}
+
+private enum Field {
+    case bookName
+    case bookAuthor
+    case bookDescription
 }
