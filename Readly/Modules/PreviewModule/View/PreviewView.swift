@@ -5,34 +5,35 @@
 //  Created by Илья Востров on 28.02.2025.
 //
 
+
 import UIKit
 import Lottie
 
-class PreviewView: UIViewController {
+final class PreviewView: UIViewController {
     
-    var state: WindowCase = .regist
+    var router: LaunchRouter?
+    
     private lazy var lottieView: LottieAnimationView = {
-        $0.frame.size = CGSize(width: view.frame.width - 80, height: view.frame.width - 80)
-        $0.center = view.center
-        $0.contentMode = .scaleAspectFill
-        $0.animationSpeed = 1
-        return $0
-    }(LottieAnimationView(name: "BookAnimation"))
+        let animationView = LottieAnimationView(name: "BookAnimation")
+        animationView.frame.size = CGSize(width: view.frame.width - 80, height: view.frame.width - 80)
+        animationView.center = view.center
+        animationView.contentMode = .scaleAspectFill
+        animationView.animationSpeed = 1
+        return animationView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .mainBackground
         view.addSubview(lottieView)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        if let stateRaw = UserDefaults.standard.string(forKey:"state") {
-            if let state = WindowCase(rawValue: stateRaw) {
-                self.state = state
-            }
-        }
-        lottieView.play(toFrame: 90) { completed in
+        lottieView.play(toFrame: 90) { [weak self] completed in
             if completed {
-                NotificationCenter.default.post(name: .windowManager, object: nil, userInfo: [String.windowInfo : self.state])
-                
+                self?.router?.navigateToNextScreen()
             }
         }
     }
