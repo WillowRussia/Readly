@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SlideItem: View {
-    var item : OnboardinData
+    var item : OnboardingSlide
     var tag: Int
     var body: some View {
         VStack(spacing: 39) {
