@@ -5,28 +5,33 @@
 //  Created by Илья Востров on 01.03.2025.
 //
 
-import UIKit
+import Foundation
 
 protocol RegistPresenterProtocol: AnyObject {
-    func checkName(name: String)
+    func registerButtonPressed(name: String)
 }
 
-class RegistPresenter: RegistPresenterProtocol {
+final class RegistPresenter: RegistPresenterProtocol {
+    private weak var view: RegistViewProtocol?
+    private let useCase: RegistUseCase
+    private let router: RegistRouter
     
-    weak var view: (any RegistViewProtocol)?
-    
-    init(view: any RegistViewProtocol){
+    init(view: RegistViewProtocol, useCase: RegistUseCase, router: RegistRouter) {
         self.view = view
+        self.useCase = useCase
+        self.router = router
     }
     
-    func checkName(name: String) {
-        if name.count >= 2 {
-            UserDefaults.standard.set(name, forKey: "name")
-            UserDefaults.standard.set(WindowCase.onboarding.rawValue, forKey: "state")
-            NotificationCenter.default.post(name: .windowManager, object: nil, userInfo: [String.windowInfo: WindowCase.onboarding])
-        } else {
-            view?.showAlert(title: "Ошибка", message: "Имя должно содержать минимум 2 символа")
+    func registerButtonPressed(name: String) {
+        
+        useCase.register(name: name) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.router.navigateToOnboarding()
+            case .failure(let error):
+                self.view?.showAlert(title: "Ошибка", message: error.localizedDescription)
+            }
         }
     }
-    
 }

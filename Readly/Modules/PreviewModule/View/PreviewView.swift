@@ -32,8 +32,9 @@ final class PreviewView: UIViewController {
         super.viewDidAppear(animated)
         
         lottieView.play(toFrame: 90) { [weak self] completed in
+            guard let self = self else { return }
             if completed {
-                self?.router?.navigateToNextScreen()
+                self.router?.navigateToNextScreen()
             }
         }
     }
