@@ -8,83 +8,62 @@
 import UIKit
 import SwiftUI
 
-protocol AddDetailsViewProtocol: BaseViewProtocol {
-    
+protocol AddDetailsViewProtocol: AnyObject {
+    func displayInitialData(from source: BookSource)
+    func displayGeneratedDescription(_ description: String)
+    func showLoading(_ isLoading: Bool)
+    func showAlert(title: String, message: String)
 }
 
-protocol AddDetailsViewDelegate {
-    func saveBook(imageType: ImageType, bookName: String, bookAuthor: String, bookDescription: String)
-    func back()
-    func createText()
-    func goToMainView()
-}
-
-class AddDetailsViewModel: ObservableObject {
-    @Published var bookDescription: String = ""
-    @Published var isAddError: Bool = false
-    @Published var isLoading: Bool = false
-}
-
-class AddDetailsView: UIViewController, AddDetailsViewProtocol, AddDetailsViewDelegate {
+final class AddDetailsView: UIViewController, AddDetailsViewProtocol {
     
-    typealias PresenterType = AddDetailsPresenterProtocol
-    var presenter: PresenterType?
-    private let viewModel = AddDetailsViewModel()
-    
+    var presenter: AddDetailsPresenterProtocol?
+    private let observableModel = AddDetailsObservableModel()
+    private var bookSource: BookSource?
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter?.viewDidLoad()
+    }
+    
+    func displayInitialData(from source: BookSource) {
+        self.bookSource = source
+        setupUI()
+    }
+    
+    func displayGeneratedDescription(_ description: String) {
+        observableModel.bookDescription = description
+    }
+    
+    func showLoading(_ isLoading: Bool) {
+        observableModel.isLoading = isLoading
+    }
+    
+    private func setupUI() {
+        guard let bookSource = bookSource else { return }
         
         let contentView = AddDetailsViewContent(
-            source: presenter!.book,
-            delegate: self,
-            viewModel: presenter!.viewModel
-        )
-        let content = UIHostingController(rootView: contentView)
-        addChild(content)
-        content.view.frame = view.frame
-        view.addSubview(content.view)
-        content.didMove(toParent: self)
-    }
-    
-    func saveBook(imageType: ImageType, bookName: String, bookAuthor: String, bookDescription: String) {
-        presenter?.createOrUpdateBook(
-            imageType: imageType,
-            bookName: bookName,
-            bookAuthor: bookAuthor,
-            bookDescription: bookDescription
-        ) { [weak self] result in
-            guard let self = self else { return }
-
-            switch result {
-            case .success(let success):
-                if success {
-                    switch self.presenter?.book {
-                    case .json:
-                        self.goToMainView()
-                    case .coreData( _):
-                        self.navigationController?.popViewController(animated: true)
-                    case .none:
-                        break
-                    }
-                }
-            case .failure(let error):
-                print("error: \(error)")
+            source: bookSource,
+            viewModel: observableModel,
+            onSave: { [weak self] parameters in
+                self?.presenter?.didTapSave(parameters: parameters)
+            },
+            onBack: { [weak self] in
+                self?.presenter?.didTapBack()
+            },
+            onCreateText: { [weak self] in
+                self?.presenter?.didTapGenerateDescription()
             }
-        }
-    }
-
-    
-    func back() {
-        navigationController?.popViewController(animated: true)
-    }
-    
-    func createText() {
-        presenter?.generateBookDescription()
+        )
+        
+        let hostingController = UIHostingController(rootView: contentView)
+        addChild(hostingController)
+        hostingController.view.frame = view.frame
+        view.addSubview(hostingController.view)
+        hostingController.didMove(toParent: self)
     }
     
-    func goToMainView() {
-        DispatchQueue.main.async { 
-            self.navigationController?.popToRootViewController(animated: true)
-        }
+    func showAlert(title: String, message: String) {
+        super.showAlert(title: title, message: message)
     }
 }
