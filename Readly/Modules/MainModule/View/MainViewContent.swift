@@ -8,23 +8,24 @@
 import SwiftUI
 
 struct MainViewContent: View {
-    @State var searchField = ""
-    @State private var selectedCategory: SelectedCategory = .willRead
-    var name: String
-    @ObservedObject var viewModel: MainViewModel
+    
+    @State private var selectedCategory: BookStatus = .willRead
+    
+    @ObservedObject var viewModel: MainViewObservableModel
+    
     var addBookCompletion: () -> Void
     var goToDetailsView: (Book) -> Void
     
     var body: some View {
         ZStack(alignment: .top) {
             // MARK: Header
-            HeaderMainView(name: name, addBookCompletion: addBookCompletion)
+            HeaderMainView(name: viewModel.userName, addBookCompletion: addBookCompletion)
                 .zIndex(9)
             
             ScrollView(.vertical, showsIndicators: false) {
                 VStack {
                     // MARK: Read
-                    ReadingSection(books: viewModel.books[BookStatus.read] ?? [], goToDetailsView: goToDetailsView)
+                    ReadingSection(books: viewModel.booksByStatus[.read] ?? [], goToDetailsView: goToDetailsView)
 
                     // MARK: Category
                     CategorySection(selectedCategory: $selectedCategory, viewModel: viewModel, goToDetailsView: goToDetailsView)
@@ -32,10 +33,10 @@ struct MainViewContent: View {
             }
             .padding(.top, 80)
             .background(Color.mainBackground)
+            .ignoresSafeArea(.all, edges: .bottom)
         }
     }
 }
-
 
 
 

@@ -8,53 +8,50 @@
 import UIKit
 import SwiftUI
 
-protocol MainViewProtocol: BaseViewProtocol {
-    
+protocol MainViewProtocol: AnyObject {
+    func display(viewModel: MainViewModel)
 }
 
-class MainViewModel: ObservableObject {
-    @Published var books: [BookStatus : [Book]] = [:]
+class MainViewObservableModel: ObservableObject {
+    @Published var userName: String = ""
+    @Published var booksByStatus: [BookStatus : [Book]] = [:]
 }
 
-class MainView: UIViewController, MainViewProtocol {
+final class MainView: UIViewController, MainViewProtocol {
     
-    typealias PresenterType = MainPresenterProtocol
-    var presenter: PresenterType?
-    var viewModel = MainViewModel()
-    
+    var presenter: MainPresenterProtocol?
+    private var observableModel = MainViewObservableModel()
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        let contentView = MainViewContent(name: presenter?.name ?? "", viewModel: viewModel   ){
-            self.navigationToViewController(book: nil)
-        } goToDetailsView: { [weak self] book in
-            guard let self = self else { return }
-            self.navigationToViewController(book: book)
-        }
         
-        let content = UIHostingController(rootView: contentView)
-        addChild(content)
-        content.view.frame = view.bounds
-        view.addSubview(content.view)
-        content.didMove(toParent: self)
-        
+        setupUI()
         navigationController?.navigationBar.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.presenter?.fetch()
-        let books = [BookStatus.read : presenter?.readingBooks ?? [], BookStatus.didRead : presenter?.unreadBooks ?? [], BookStatus.willRead : presenter?.willReadBooks ?? []]
-        viewModel.books = books
+        super.viewWillAppear(animated)
+        presenter?.viewWillAppear()
     }
     
-    private func navigationToViewController(book: Book?){
-        if let book {
-            let viewController = Builder.createDetailsView(book: book)
-        navigationController?.pushViewController(viewController, animated: true)
-        } else {
-            let viewController = Builder.createAddBookView()
-            navigationController?.pushViewController(viewController, animated: true)
+    private func setupUI() {
+        let contentView = MainViewContent(
+            viewModel: observableModel
+        ) { [weak self] in
+            self?.presenter?.didTapAddBook()
+        } goToDetailsView: { [weak self] book in
+            self?.presenter?.didSelect(book: book)
         }
+        
+        let hostingController = UIHostingController(rootView: contentView)
+        addChild(hostingController)
+        hostingController.view.frame = view.bounds
+        view.addSubview(hostingController.view)
+        hostingController.didMove(toParent: self)
     }
     
-    
+    func display(viewModel: MainViewModel) {
+        observableModel.userName = viewModel.userName
+        observableModel.booksByStatus = viewModel.booksByStatus
+    }
 }
