@@ -9,7 +9,7 @@ import SwiftUI
 
 struct OnboardingViewContent: View {
     
-    var slides: [OnboardinData]
+    var slides: [OnboardingSlide]
     var buttonAction: () -> Void
     
     @State private var selected: Int = 0
@@ -71,8 +71,3 @@ struct OnboardingViewContent: View {
     }
 }
 
-#Preview {
-    OnboardingViewContent(slides: OnboardinData.mockData, buttonAction: {
-        print()
-    } )
-}

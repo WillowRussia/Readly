@@ -15,7 +15,7 @@ protocol MainConfigurator {
 final class MainConfiguratorImplementation: MainConfigurator {
     func configure(viewController: MainView) {
         let userGateway = MainUserDefaultsUserGateway()
-        let booksGateway = CoreDataBooksDatabaseGateway()
+        let booksGateway = BookGatewayImplementation()
         
         let useCase = FetchMainScreenDataUseCaseImplementation(userGateway: userGateway, booksGateway: booksGateway)
         

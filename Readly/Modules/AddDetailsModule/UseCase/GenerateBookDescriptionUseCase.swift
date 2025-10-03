@@ -34,10 +34,10 @@ protocol SaveBookUseCase {
 }
 
 final class SaveBookUseCaseImplementation: SaveBookUseCase {
-    private let dbGateway: BooksDatabaseGateway
+    private let dbGateway: BookGateway
     private let networkGateway: BookDetailsGateway
     
-    init(dbGateway: BooksDatabaseGateway, networkGateway: BookDetailsGateway) {
+    init(dbGateway: BookGateway, networkGateway: BookDetailsGateway) {
         self.dbGateway = dbGateway
         self.networkGateway = networkGateway
     }

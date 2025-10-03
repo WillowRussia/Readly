@@ -14,7 +14,7 @@ protocol AddDetailsConfigurator {
 
 final class AddDetailsConfiguratorImplementation: AddDetailsConfigurator {
     func configure(viewController: AddDetailsView, bookSource: BookSource) {
-        let dbGateway = CoreDataBooksDatabaseGateway()
+        let dbGateway = BookGatewayImplementation()
         let networkGateway = NetworkBookDetailsGateway()
         
         let generateDescUseCase = GenerateBookDescriptionUseCaseImplementation(gateway: networkGateway)

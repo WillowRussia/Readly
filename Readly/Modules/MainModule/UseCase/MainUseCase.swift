@@ -19,9 +19,9 @@ protocol FetchMainScreenDataUseCase {
 
 final class FetchMainScreenDataUseCaseImplementation: FetchMainScreenDataUseCase {
     private let userGateway: MainUserGateway
-    private let booksGateway: BooksDatabaseGateway
+    private let booksGateway: BookGateway
     
-    init(userGateway: MainUserGateway, booksGateway: BooksDatabaseGateway) {
+    init(userGateway: MainUserGateway, booksGateway: BookGateway) {
         self.userGateway = userGateway
         self.booksGateway = booksGateway
     }
