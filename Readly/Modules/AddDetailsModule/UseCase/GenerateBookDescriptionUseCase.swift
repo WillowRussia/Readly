@@ -51,9 +51,9 @@ final class SaveBookUseCaseImplementation: SaveBookUseCase {
             
             switch parameters.source {
             case .json:
-                self.dbGateway.createBook(name: parameters.name, author: parameters.author, cover: imageData, description: parameters.description)
+                _ = self.dbGateway.createBook(name: parameters.name, author: parameters.author, description: parameters.description, coverData: imageData)
             case .coreData(let existingBook):
-                self.dbGateway.updateBook(existingBook, name: parameters.name, author: parameters.author, description: parameters.description, cover: imageData)
+                self.dbGateway.updateBook(existingBook, name: parameters.name, author: parameters.author, description: parameters.description, coverData: imageData)
             }
             completion(.success(()))
         }

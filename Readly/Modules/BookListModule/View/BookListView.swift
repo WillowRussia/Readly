@@ -8,33 +8,39 @@
 import UIKit
 import SwiftUI
 
-protocol BookListViewProtocol: BaseViewProtocol {
-
+protocol BookListViewProtocol: AnyObject {
+    func display(books: [JsonBookModelItem], title: String)
 }
 
-class BookListView: UIViewController, BookListViewProtocol {
+final class BookListView: UIViewController, BookListViewProtocol {
     
-    typealias PresenterType = BookListPresenterProtocol
-    var presenter: PresenterType?
+    var presenter: BookListPresenterProtocol?
+    
+    
+    func display(books: [JsonBookModelItem], title: String) {
+        let contentView = BookListViewContent(
+            books: books,
+            bookTitle: title,
+            onAction: { [weak self] action in
+                switch action {
+                case .selectBook(let book):
+                    self?.presenter?.didSelectBook(book)
+                case .goBack:
+                    self?.presenter?.didTapBack()
+                }
+            }
+        )
+        
+        let hostingController = UIHostingController(rootView: contentView)
+        
+        addChild(hostingController)
+        hostingController.view.frame = self.view.bounds
+        self.view.addSubview(hostingController.view)
+        hostingController.didMove(toParent: self)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let contentView = BookListViewContent(books: presenter?.bookList ?? [], bookTitle: presenter?.bookTitle ?? "Неизвестное имя") { [weak self] book in
-            guard let self = self else { return }
-            if let book = book {
-                let viewController = Builder.createAddDetailsView(book: .json(book))
-                navigationController?.pushViewController(viewController, animated: true)
-            } else {
-                navigationController?.popViewController(animated: true)
-            }
-            
-        }
-        let content = UIHostingController(rootView: contentView)
-        addChild(content)
-        content.view.frame = view.frame
-        view.addSubview(content.view)
-        content.didMove(toParent: self)
+        presenter?.viewDidLoad()
     }
-    
 }

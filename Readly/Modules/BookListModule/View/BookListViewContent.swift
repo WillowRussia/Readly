@@ -7,17 +7,22 @@
 
 import SwiftUI
 
-import SwiftUI
+
+enum BookListAction {
+    case selectBook(JsonBookModelItem)
+    case goBack
+}
 
 struct BookListViewContent: View {
     let books: [JsonBookModelItem]
     let bookTitle: String
-    let completion: (JsonBookModelItem?) -> ()
+    
+    let onAction: (BookListAction) -> Void
     
     var body: some View {
         ZStack(alignment: .top) {
             NavigationHeader(title: bookTitle) {
-                completion(nil)
+                onAction(.goBack)
             }
             .zIndex(1)
             
@@ -34,7 +39,7 @@ struct BookListViewContent: View {
                         VStack(alignment: .leading, spacing: 23) {
                             ForEach(books, id: \.self) { book in
                                 BookListItem(book: book) {
-                                    completion(book)
+                                    onAction(.selectBook(book))
                                 }
                             }
                         }
@@ -45,6 +50,7 @@ struct BookListViewContent: View {
             }
         }
         .padding(.horizontal, 30)
-        .background(.mainBackground)
+        .background(Color.mainBackground)
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
