@@ -25,7 +25,7 @@ final class AddBookRouterImplementation: AddBookRouter {
         configurator.configure(
             viewController: bookListView,
             bookList: books,
-            bookTitle: title
+            title: title
         )
         viewController?.navigationController?.pushViewController(bookListView, animated: true)
     }

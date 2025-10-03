@@ -12,11 +12,11 @@ struct HeaderDetailsView: View {
     var showTitle: Bool
     var offsetTop: CGFloat
     var onBack: () -> Void
-    var onEditDescription: (Book) -> Void
-    var onDeleteBook: (Book) -> Void
+    var onEdit: () -> Void
+    var onDeleteBook: () -> Void
     
     @State private var showDeleteAlert = false
-    @State private var showMenu = false
+    
     var body: some View {
          HStack(spacing: 20) {
              Button(action: onBack) {
@@ -37,7 +37,7 @@ struct HeaderDetailsView: View {
 
              Menu {
                  Button("Редактировать описание") {
-                     onEditDescription(book)
+                     onEdit()
                  }
                  Button("Удалить книгу", role: .destructive) {
                      showDeleteAlert = true
@@ -58,11 +58,11 @@ struct HeaderDetailsView: View {
          .padding(.bottom, 15)
          .zIndex(1)
          .background(
-             .mainBackground.opacity(offsetTop < 0 ? (-offsetTop * 5.3 / 1000) : 0)
+             Color.mainBackground.opacity(offsetTop < 0 ? (-offsetTop * 5.3 / 1000) : 0)
          )
          .alert("Удалить книгу?", isPresented: $showDeleteAlert) {
              Button("Удалить", role: .destructive) {
-                 onDeleteBook(book)
+                 onDeleteBook()
              }
              Button("Отмена", role: .cancel) {}
          } message: {
