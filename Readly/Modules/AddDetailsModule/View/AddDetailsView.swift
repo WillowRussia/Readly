@@ -13,6 +13,7 @@ protocol AddDetailsViewProtocol: AnyObject {
     func displayGeneratedDescription(_ description: String)
     func showLoading(_ isLoading: Bool)
     func showAlert(title: String, message: String)
+    func display(viewModel: AddDetailsViewModel)
 }
 
 final class AddDetailsView: UIViewController, AddDetailsViewProtocol {
@@ -20,11 +21,17 @@ final class AddDetailsView: UIViewController, AddDetailsViewProtocol {
     var presenter: AddDetailsPresenterProtocol?
     private let observableModel = AddDetailsObservableModel()
     private var bookSource: BookSource?
+    private var initialViewModel: AddDetailsViewModel?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter?.viewDidLoad()
     }
+    
+    func display(viewModel: AddDetailsViewModel) {
+            self.initialViewModel = viewModel
+            setupUI()
+        }
     
     func displayInitialData(from source: BookSource) {
         self.bookSource = source
@@ -40,11 +47,13 @@ final class AddDetailsView: UIViewController, AddDetailsViewProtocol {
     }
     
     private func setupUI() {
+        guard let viewModel = initialViewModel else { return }
         guard let bookSource = bookSource else { return }
         
         let contentView = AddDetailsViewContent(
             source: bookSource,
-            viewModel: observableModel,
+            initialViewModel: viewModel,
+            observableModel: observableModel,
             onSave: { [weak self] parameters in
                 self?.presenter?.didTapSave(parameters: parameters)
             },

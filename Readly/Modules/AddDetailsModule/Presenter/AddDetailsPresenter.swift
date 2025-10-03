@@ -5,7 +5,7 @@
 //  Created by Илья Востров on 05.04.2025.
 //
 
-import Foundation
+import UIKit
 
 protocol AddDetailsPresenterProtocol: AnyObject {
     func viewDidLoad()
@@ -19,6 +19,7 @@ final class AddDetailsPresenter: AddDetailsPresenterProtocol {
     private let router: AddDetailsRouter
     private let generateDescUseCase: GenerateBookDescriptionUseCase
     private let saveBookUseCase: SaveBookUseCase
+    private let storageManager = StorageManager()
     
     private let bookSource: BookSource
     
@@ -36,6 +37,8 @@ final class AddDetailsPresenter: AddDetailsPresenterProtocol {
     
     func viewDidLoad() {
         view?.displayInitialData(from: bookSource)
+        let viewModel = createViewModel(from: bookSource)
+        view?.display(viewModel: viewModel)
     }
     
     func didTapGenerateDescription() {
@@ -82,4 +85,29 @@ final class AddDetailsPresenter: AddDetailsPresenterProtocol {
     func didTapBack() {
         router.close()
     }
+    
+    private func createViewModel(from source: BookSource) -> AddDetailsViewModel {
+            switch source {
+            case .json(let jsonBook):
+                return AddDetailsViewModel(
+                    name: jsonBook.title ?? "",
+                    author: jsonBook.author_name?.authorsInOneLine() ?? "",
+                    description: "",
+                    coverImage: .defaultCover
+                )
+                
+            case .coreData(let book):
+                var coverImage: UIImage = .defaultCover
+                if let data = storageManager.getCover(bookId: book.id) {
+                    coverImage = UIImage(data: data) ?? .defaultCover
+                }
+                
+                return AddDetailsViewModel(
+                    name: book.name,
+                    author: book.author,
+                    description: book.bookDescription,
+                    coverImage: coverImage
+                )
+            }
+        }
 }

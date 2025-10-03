@@ -7,136 +7,169 @@
 
 import SwiftUI
 
-
 struct AddDetailsViewContent: View {
-    let source: BookSource
-    @State var bookName: String
-    @State var bookAuthor: String
-    @State var bookCover: UIImage = .defaultCover
-    @State var isShowPicker = false
-    @State var bookCoverType: ImageType
-    @ObservedObject var viewModel: AddDetailsViewModel
-    @FocusState private var focusedField: Field?
-    var delegate: AddDetailsViewDelegate?
     
-    init(source: BookSource, delegate: AddDetailsViewDelegate?, viewModel: AddDetailsViewModel) {
+    // MARK: - Properties
+    
+    @State private var bookName: String
+    @State private var bookAuthor: String
+    @State private var bookDescription: String
+    @State private var bookCoverType: ImageType
+    
+    @State private var isShowPicker = false
+    @State private var selectedImage: UIImage?
+    
+    @ObservedObject var observableModel: AddDetailsObservableModel
+    
+    var onSave: (SaveBookParameters) -> Void
+    var onBack: () -> Void
+    var onCreateText: () -> Void
+    
+    @FocusState private var focusedField: Field?
+    
+    private let source: BookSource
+    
+    // MARK: - Initializer
+    init(
+        source: BookSource,
+        initialViewModel: AddDetailsViewModel,
+        observableModel: AddDetailsObservableModel,
+        onSave: @escaping (SaveBookParameters) -> Void,
+        onBack: @escaping () -> Void,
+        onCreateText: @escaping () -> Void
+    ) {
         self.source = source
-        self.delegate = delegate
-        self.viewModel = viewModel
+        self.observableModel = observableModel
+        self.onSave = onSave
+        self.onBack = onBack
+        self.onCreateText = onCreateText
         
-        switch source {
-        case .json(let jsonBook):
-            _bookName = .init(initialValue: jsonBook.title ?? "Неизвестно")
-            _bookAuthor = .init(initialValue: jsonBook.author_name?.authorsInOneLine() ?? "Неизвестно")
-            bookCoverType = .network(jsonBook.cover_i?.description)
-        case .coreData(let book):
-            _bookName = .init(initialValue: book.name)
-            _bookAuthor = .init(initialValue: book.author)
-            if let data = StorageManager().getCover(bookId: book.id), let image = UIImage(data: data) {
-                _bookCover = .init(initialValue: image)
-                bookCoverType = .local(image)
-            } else {
-                bookCoverType = .local(.defaultCover)
-            }
-            viewModel.bookDescription = book.bookDescription
-        }
+        _bookName = .init(initialValue: initialViewModel.name)
+        _bookAuthor = .init(initialValue: initialViewModel.author)
+        _bookDescription = .init(initialValue: initialViewModel.description)
+        _bookCoverType = .init(initialValue: .local(initialViewModel.coverImage))
     }
     
+    // MARK: - Body
     
     var body: some View {
-        
-        Color.mainBackground
-            .onTapGesture {
-                hideKeyboard()
+            VStack(spacing: 40) {
+                NavigationHeader(title: bookName, action: onBack)
+                    .padding(.top, 26)
+                
+                formContent
             }
-        
-        VStack(spacing: 40) {
-            NavigationHeader(title: bookName) {
-                delegate?.back()
+            .padding(.horizontal, 30)
+            .padding(.bottom, 20)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .background(Color.mainBackground.onTapGesture(perform: hideKeyboard))
+            .sheet(isPresented: $isShowPicker) {
+                ImagePickerView(image: $selectedImage)
             }
-            .padding(.top, 26)
-            VStack(spacing: 30) {
-                VStack(spacing: 20 ){
-                    BookCover(image: bookCoverType)
-                        .scaledToFill()
-                        .clipped()
-                        .frame(width: 200, height: 270)
-                        .clipShape(.rect(cornerRadius: 5))
-                        .overlay(alignment: Alignment(horizontal: .trailing, vertical: .top)){
-                            Button{
-                                isShowPicker.toggle()
-                            } label: {
-                                ZStack{
-                                    Circle()
-                                        .foregroundStyle(.appGreen)
-                                        .frame(width: 28, height: 28)
-                                    Image(systemName:"arrow.triangle.2.circlepath")
-                                        .resizable()
-                                        .frame(width: 16, height: 16)
-                                        .foregroundStyle(.white)
-                                }
-                                .offset(x: 10, y: -10)
-                            }
-                            .sheet(isPresented: $isShowPicker) {
-                                ImagePickerView(image: $bookCover)
-                            }
-                            
-                        }
-                        .onChange (of: bookCover) { newValue in
-                            bookCoverType = .local(newValue)
-                        }
+            .onChange(of: selectedImage) { newImage in
+                if let newImage = newImage {
+                    self.bookCoverType = .local(newImage)
+                }
+            }
+            .onChange(of: observableModel.bookDescription) { newDescription in
+                self.bookDescription = newDescription
+            }
+        }
+        
+        // MARK: - Subviews
+        
+        private var formContent: some View {
+            ScrollView {
+                VStack(spacing: 30) {
+                    coverAndFieldsSection
                     
-                    VStack(spacing: 10){
-                        BaseTextView(placeholder: "Название книги", text: $bookName)
-                            .focused($focusedField, equals: .bookName)
-                        BaseTextView(placeholder: "Автор книги", text: $bookAuthor)
-                            .focused($focusedField, equals: .bookAuthor)
-                        TextEditorWithPlaceholder(text: $viewModel.bookDescription, placeholder: "Описание книги", viewModel: viewModel) {
-                            delegate?.createText()
-                        }
-                    }
+                    OrangeButton(title: "Сохранить", action: handleSaveChanges)
+                        .disabled(isSaveButtonDisabled)
+                        .opacity(isSaveButtonDisabled ? 0.5 : 1)
                 }
-                
-                
-                OrangeButton(title: "Сохранить") {
-                    delegate?.saveBook(imageType: bookCoverType, bookName: bookName, bookAuthor: bookAuthor, bookDescription: viewModel.bookDescription)
-                }
-                .disabled((viewModel.bookDescription.count < 3 || bookName.count < 3 || bookAuthor.count < 3) ? true : false)
-                .opacity((viewModel.bookDescription.count < 3 || bookName.count < 3 || bookAuthor.count < 3) ? 0.5 : 1)
-                
-                
             }
         }
-        .padding(.horizontal, 30)
-        .padding(.bottom, 20)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: Alignment(horizontal: .leading, vertical: . top))
-        .alert(isPresented: $viewModel.isAddError) {
-            Alert(title: Text("Ошибка"),
-                  message: Text("0"), dismissButton: .default(Text("0K")))
-        }
-        .onChange(of: viewModel.isAddError) { isError in
-                    if isError {
-                        hideKeyboard()
+        
+        private var coverAndFieldsSection: some View {
+            VStack(spacing: 20) {
+                BookCoverView(imageType: bookCoverType)
+                    .overlay(alignment: .topTrailing) {
+                        ChangeCoverButton(isShowPicker: $isShowPicker)
                     }
+                
+                textFieldsSection
+            }
+        }
+        
+        private var textFieldsSection: some View {
+            VStack(spacing: 10) {
+                BaseTextView(placeholder: "Название книги", text: $bookName)
+                    .focused($focusedField, equals: .bookName)
+                BaseTextView(placeholder: "Автор книги", text: $bookAuthor)
+                    .focused($focusedField, equals: .bookAuthor)
+                TextEditorWithPlaceholder(text: $bookDescription, placeholder: "Описание книги", viewModel: observableModel, completion: onCreateText)
+            }
+        }
+        
+        // MARK: - Computed Properties & Methods
+        
+        private var isSaveButtonDisabled: Bool {
+            bookName.count < 2 || bookAuthor.count < 2 || bookDescription.count < 10
+        }
+        
+        private func handleSaveChanges() {
+            hideKeyboard()
+            let parameters = SaveBookParameters(
+                source: source,
+                imageType: bookCoverType,
+                name: bookName,
+                author: bookAuthor,
+                description: bookDescription
+            )
+            onSave(parameters)
+        }
+        
+        private func hideKeyboard() {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+    }
+
+    // MARK: - Private Helper Views
+
+    private struct BookCoverView: View {
+        let imageType: ImageType
+        
+        var body: some View {
+            BookCover(image: imageType)
+                .scaledToFill()
+                .frame(width: 200, height: 270)
+                .clipShape(.rect(cornerRadius: 5))
+        }
+    }
+
+    private struct ChangeCoverButton: View {
+        @Binding var isShowPicker: Bool
+        
+        var body: some View {
+            Button {
+                isShowPicker.toggle()
+            } label: {
+                ZStack {
+                    Circle()
+                        .foregroundStyle(Color.appGreen)
+                        .frame(width: 28, height: 28)
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .resizable()
+                        .frame(width: 16, height: 16)
+                        .foregroundStyle(.white)
                 }
+                .offset(x: 10, y: -10)
+            }
+        }
     }
-    private var isSaveButtonDisabled: Bool {
-        viewModel.bookDescription.count < 3 || bookName.count < 3 || bookAuthor.count < 3
-    }
-    
-    
-    private func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-}
 
-enum BookSource {
-    case json(JsonBookModelItem)
-    case coreData(Book)
-}
+    // MARK: - Helper Enums
 
-private enum Field {
-    case bookName
-    case bookAuthor
-    case bookDescription
-}
+    private enum Field {
+        case bookName, bookAuthor
+    }

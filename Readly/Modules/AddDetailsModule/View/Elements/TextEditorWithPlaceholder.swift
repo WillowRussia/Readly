@@ -11,7 +11,7 @@ import SwiftUI
 struct TextEditorWithPlaceholder: View {
     @Binding var text: String
     var placeholder: String
-    @ObservedObject var viewModel: AddDetailsViewModel
+    @ObservedObject var viewModel: AddDetailsObservableModel
     let completion: () -> ()
 
     var body: some View {
