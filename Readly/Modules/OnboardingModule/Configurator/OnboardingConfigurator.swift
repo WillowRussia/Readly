@@ -15,7 +15,7 @@ protocol OnboardingConfigurator {
 final class OnboardingConfiguratorImplementation: OnboardingConfigurator {
     func configure(viewController: OnboardingView) {
 
-        let onboardingDataGateway = MockOnboardingDataGateway()
+        let onboardingDataGateway = LocalOnboardingDataGateway()
         let windowStateGateway = UserDefaultsWindowStateGateway()
         
         let fetchSlidesUseCase = FetchOnboardingSlidesUseCaseImplementation(gateway: onboardingDataGateway)
