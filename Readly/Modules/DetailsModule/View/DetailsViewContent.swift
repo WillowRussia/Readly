@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DetailsViewContent: View {
-    @ObservedObject var bookWrapper: BookWrapper
+    @ObservedObject var bookWrapper: DetailsObservableModel
     var notes: [Note]
     var onAddNote: (String) -> Void
     var onDeleteNote: (Note) -> Void

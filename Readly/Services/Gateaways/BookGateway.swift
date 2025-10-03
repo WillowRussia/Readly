@@ -24,10 +24,12 @@ protocol BookGateway {
 
 final class BookGatewayImplementation: BookGateway {
     
+    static let shared = BookGatewayImplementation()
+    
     private let coreDataManager = CoreDataManager.shared
     private let storageManager =  StorageManager()
     
-    init() {}
+    private init() {}
     
     func fetchBooks() -> [Book] {
         return coreDataManager.fetchBooks()
