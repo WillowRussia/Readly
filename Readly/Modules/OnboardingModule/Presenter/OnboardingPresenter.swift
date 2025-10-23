@@ -5,26 +5,36 @@
 //  Created by Илья Востров on 01.03.2025.
 //
 
-import UIKit
+import Foundation
 
 protocol OnboardingPresenterProtocol: AnyObject {
-    var mockData: [OnboardinData] { get }
-    func startApp()
+    func viewDidLoad()
+    func startAppButtonPressed()
 }
 
-class OnboardingPresenter: OnboardingPresenterProtocol {
+final class OnboardingPresenter: OnboardingPresenterProtocol {
+    private weak var view: OnboardingViewProtocol?
+    private let fetchSlidesUseCase: FetchOnboardingSlidesUseCase
+    private let completeOnboardingUseCase: CompleteOnboardingUseCase
+    private let router: OnboardingRouter
     
-    var mockData: [OnboardinData] = OnboardinData.mockData
-    
-    weak var view: (any OnboardingViewProtocol)?
-    
-    init(view: any OnboardingViewProtocol){
+    init(view: OnboardingViewProtocol,
+         fetchSlidesUseCase: FetchOnboardingSlidesUseCase,
+         completeOnboardingUseCase: CompleteOnboardingUseCase,
+         router: OnboardingRouter) {
         self.view = view
+        self.fetchSlidesUseCase = fetchSlidesUseCase
+        self.completeOnboardingUseCase = completeOnboardingUseCase
+        self.router = router
     }
     
-    func startApp() {
-        UserDefaults.standard.set(WindowCase.main.rawValue, forKey: "state")
-        NotificationCenter.default.post(name: .windowManager, object: nil, userInfo: [String.windowInfo: WindowCase.main])
+    func viewDidLoad() {
+        let slides = fetchSlidesUseCase.execute()
+        view?.display(slides: slides)
     }
     
+    func startAppButtonPressed() {
+        completeOnboardingUseCase.execute()
+        router.navigateToMainApp()
+    }
 }

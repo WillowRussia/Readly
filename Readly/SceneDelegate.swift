@@ -7,37 +7,25 @@
 
 import UIKit
 
-enum WindowCase: String{
-    case regist, onboarding, main
-}
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
-    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(windowManager), name: .windowManager, object: nil)
+        let window = UIWindow(windowScene: windowScene)
         
-        guard let scene = (scene as? UIWindowScene) else { return }
+        let previewView = PreviewView()
         
-        self.window = UIWindow(windowScene: scene)
-        window?.rootViewController = PreviewView()
-        window?.makeKeyAndVisible()
+        let windowStateGateway = UserDefaultsWindowStateGateway()
+        
+        let launchRouter = LaunchRouterImplementation(window: window, windowStateGateway: windowStateGateway)
+        previewView.router = launchRouter
+        
+        window.rootViewController = previewView
+        
+        self.window = window
+        window.makeKeyAndVisible()
     }
-    
-    @objc func windowManager(notification: Notification){
-        guard let userInfo = notification.userInfo as? [String: WindowCase] else { return }
-        guard let window = userInfo[.windowInfo] else { return }
-        
-        switch window {
-        case .regist:
-            self.window?.rootViewController = Builder.createRegistView()
-        case .onboarding:
-            self.window?.rootViewController = Builder.createOnboardingView()
-        case .main:
-            self.window?.rootViewController = Builder.createMainView()
-        }
-    }
-    
 }

@@ -9,37 +9,49 @@ import SwiftUI
 import UIKit
 
 struct ImagePickerView: UIViewControllerRepresentable {
-    @Binding var image: UIImage
-    typealias UIViewControllerType = UIImagePickerController
+    
+    @Binding var image: UIImage?
+    
+    @Environment(\.presentationMode) private var presentationMode
+    
+    // MARK: - UIViewControllerRepresentable
+    
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
         picker.sourceType = .photoLibrary
-//        picker.allowsEditing = true
         picker.delegate = context.coordinator
         return picker
     }
+    
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator { image in
-            self.image = image
+        Coordinator { selectedImage in
+            if let selectedImage = selectedImage {
+                self.image = selectedImage
+            }
+            self.presentationMode.wrappedValue.dismiss()
         }
     }
     
+    // MARK: - Coordinator
+    
     final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
         
-        var completion: (UIImage) -> Void
+        private var completion: (UIImage?) -> Void
         
-        init(completion: @escaping (UIImage) -> Void) {
+        init(completion: @escaping (UIImage?) -> Void) {
             self.completion = completion
         }
         
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey:Any]) {
-            if let image = info[.originalImage] as? UIImage {
-                completion (image)
-            }
-            picker.dismiss(animated: true)
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+            let image = info[.originalImage] as? UIImage
+            completion(image)
+        }
+        
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            completion(nil)
         }
     }
 }

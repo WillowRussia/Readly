@@ -8,15 +8,19 @@
 import SwiftUI
 
 struct DetailsViewContent: View {
-    @ObservedObject var bookWrapper: BookWrapper
-    var notes: [Note]
+    // 1. Используем один @ObservedObject для всех данных экрана.
+    //    Я переименовал `bookWrapper` в `observableModel` для ясности.
+    @ObservedObject var observableModel: DetailsObservableModel
+    
+    // 2. Упрощаем замыкания: Presenter уже знает, о какой книге идет речь.
     var onAddNote: (String) -> Void
     var onDeleteNote: (Note) -> Void
     var onStatusChange: (BookStatus) -> Void
     var onBack: () -> Void
-    var onEditDescription: (Book) -> Void
-    var onDeleteBook: (Book) -> Void
+    var onEdit: () -> Void
+    var onDeleteBook: () -> Void
 
+    // Все твои @State переменные остаются без изменений, они управляют UI.
     @State private var bookNote: String = ""
     @State private var commetDeleteOffsetX: CGFloat = 0
     @State private var swipedNoteId: String? = nil
@@ -25,17 +29,29 @@ struct DetailsViewContent: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            HeaderDetailsView(book: bookWrapper.book, showTitle: showTitle, offsetTop: offsetTop, onBack: onBack, onEditDescription: onEditDescription, onDeleteBook: onDeleteBook)
+            HeaderDetailsView(
+                book: observableModel.book,
+                showTitle: showTitle,
+                offsetTop: offsetTop,
+                onBack: onBack,
+                onEdit: onEdit,
+                onDeleteBook: onDeleteBook
+            )
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 29) {
-                    BookHeader(book: bookWrapper.book, offsetTop: $offsetTop, showTitle: $showTitle, onStatusChange: onStatusChange)
+                    BookHeader(
+                        book: observableModel.book,
+                        offsetTop: $offsetTop,
+                        showTitle: $showTitle,
+                        onStatusChange: onStatusChange
+                    )
 
                     VStack(alignment: .leading, spacing: 36) {
-                        DescriptionSection(book: bookWrapper.book)
+                        DescriptionSection(book: observableModel.book)
 
                         NotesSection(
-                            notes: notes,
+                            notes: observableModel.notes,
                             bookNote: $bookNote,
                             commetDeleteOffsetX: $commetDeleteOffsetX,
                             swipedNoteId: $swipedNoteId,
@@ -48,10 +64,6 @@ struct DetailsViewContent: View {
                 .padding(.bottom, 30)
             }
         }
-        .background(.mainBackground)
-
-
+        .background(Color.mainBackground)
     }
-
-
 }

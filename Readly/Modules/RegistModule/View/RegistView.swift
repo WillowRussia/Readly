@@ -8,21 +8,20 @@
 import UIKit
 import SwiftUI
 
-protocol RegistViewProtocol: BaseViewProtocol{
+protocol RegistViewProtocol: AnyObject {
     func showAlert(title: String, message: String)
 }
 
-class RegistView: UIViewController, RegistViewProtocol {
-    typealias PresenterType = RegistPresenterProtocol
-    var presenter: PresenterType?
+final class RegistView: UIViewController, RegistViewProtocol {
     
+    var presenter: RegistPresenterProtocol?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let contentView = RegistViewContent{ [weak self] in
+
+        let contentView = RegistViewContent{ [weak self] name in
             guard let self = self else { return }
-            self.presenter?.checkName(name: $0)
+            self.presenter?.registerButtonPressed(name: name)
         }
         let content = UIHostingController(rootView: contentView)
         addChild(content)
@@ -32,10 +31,6 @@ class RegistView: UIViewController, RegistViewProtocol {
     }
     
     func showAlert(title: String, message: String) {
-            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            present(alert, animated: true, completion: nil)
-        }
-
-
+        super.showAlert(title: title, message: message)
+    }
 }
