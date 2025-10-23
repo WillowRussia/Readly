@@ -12,6 +12,7 @@ final class StorageManager {
     
     private let fileManager = FileManager.default
     private let documentsDirectory: URL
+    private let coverName = "cover.jpeg"
     
     init() {
         guard let url = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
@@ -21,7 +22,7 @@ final class StorageManager {
     }
 
     func saveCover(_ imageData: Data, bookId: String) {
-        let fileURL = documentsDirectory.appendingPathComponent(bookId)
+        let fileURL = documentsDirectory.appendingPathComponent(bookId).appendingPathComponent(coverName)
         
         do {
             try imageData.write(to: fileURL, options: .atomic)
@@ -31,7 +32,7 @@ final class StorageManager {
     }
     
     func getCover(bookId: String) -> Data? {
-        let fileURL = documentsDirectory.appendingPathComponent(bookId)
+        let fileURL = documentsDirectory.appendingPathComponent(bookId).appendingPathComponent(coverName)
         
         do {
             let imageData = try Data(contentsOf: fileURL)

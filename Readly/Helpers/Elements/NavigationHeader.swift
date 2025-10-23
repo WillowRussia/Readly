@@ -12,7 +12,6 @@ struct NavigationHeader: View {
     var action: () -> ()
     var body: some View {
         HStack{
-            // 'button' back
             Button {
                 action()
             }
