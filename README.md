@@ -35,5 +35,5 @@ Readly/
 - Xcode 16.1+
 
 
-### License
+## License
 [Standart MIT license](LICENSE)
