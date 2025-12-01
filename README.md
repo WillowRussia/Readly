@@ -6,20 +6,6 @@
   <img src="Assets/PhoneLayout3.png" width="32.6%" height="auto" alt="">
 </div>
 
-## Project Structure
-
-The application follows a modular structure to ensure separation of concerns:
-
-```text
-Readly/
-├── Modules/          # Screen modules
-├── NetworkManagers/  # API handling & Data fetching
-├── Services/         # Business logic & Data persistence
-├── Helpers/          # Extensions & Constants
-├── Lottie/           # Animation assets
-└── Fonts/            # Custom typography
-```
-
 ## Tech Stack
 
 - **Language:** Swift 5
