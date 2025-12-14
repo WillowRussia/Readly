@@ -2,7 +2,7 @@
 
 <div>
   <img src="Assets/PhoneLayout1.png" width="32%" height="auto" alt="">
-  <img src="Assets/PhoneLayout2.png" width="32" height="auto" alt="">
+  <img src="Assets/PhoneLayout2.png" width="32%" height="auto" alt="">
   <img src="Assets/PhoneLayout3.png" width="32%" height="auto" alt="">
 </div>
 
